@@ -1,9 +1,19 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse  # if we use render we no longer need this
+from django.template import loader  # if we use render we no longer need this
+from .models import Question
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    # the below after content is shortcut | template = loader.get_template('polls/index.html')
+    context = {
+        'latest_question_list': latest_question_list,
+    }
+    # this is combine shortcut step which import
+    return render(request, 'polls/index.html', context)
+    # the above method is short cut | return HttpResponse(template.render(context, request))
+    #   return HttpResponse("Hello, world. You're at the polls index.")
 
 
 def detail(request, question_id):
